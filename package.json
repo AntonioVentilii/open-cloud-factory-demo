@@ -1,0 +1,12 @@
+{
+  "name": "open-cloud",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Open Cloud gateway — demo repo for the Open Cloud Factory",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=20" }
+}
