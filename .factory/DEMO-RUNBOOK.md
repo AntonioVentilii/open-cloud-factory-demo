@@ -12,25 +12,26 @@ orchestrator. Nobody needs GitHub permissions: the orchestrator opens, reviews
 and merges PRs with Antonio's login; the repo is public so everyone can open
 the PR links.
 
-## The one thing to test BEFORE the call (Antonio, 5 min)
+## How Dom takes part without touching the board (the GitHub door)
 
-The board's store is tied to the **artifact owner's claude.ai account**, and
-Antonio's is a personal account, not the org. Whether Dom (on his own account)
-can open it is unknown until tried:
+The board's live store is tied to Antonio's claude.ai account and cannot be
+opened from other accounts. That does not matter: **Dom files and approves
+through GitHub**, which he already has.
 
-1. Board → share menu → add Dom's email with *can view*. Send him the link.
-2. Dom opens it. Two outcomes:
-   - **He sees the columns** → Plan A below: Dom clicks and files from his own
-     machine.
-   - **"Sign in to view this page" / blank** → Plan B: Antonio screen-shares
-     the board; Dom *says* the TODOs and Antonio's sessions type them; Antonio
-     clicks the gates on Dom's word. Same story, one keyboard. Do not spend
-     demo time fighting accounts.
+- **File:** Dom tells his Claude "create a TODO in the open-cloud factory:
+  …" → his session opens an issue on the public repo (anyone can). No
+  collaborator rights, no Claude org, no skill strictly required — `gh`
+  logged in is enough (the skill adds dedup and the right format).
+- **Follow:** the orchestrator comments on the issue at every stage
+  ("picked up as oc-…", "spec ready", "PR #4 opened", "merged"). Dom watches
+  the issue thread in his own browser; Antonio screen-shares the board.
+- **Approve:** when the issue says so, Dom replies `/approve` (or
+  `/changes <note>`) on the issue. Commenting on a public repo needs no
+  permission. Antonio can also click the board; first one wins.
+- **Close:** the PR carries `Closes #n`; the issue closes on merge.
 
-Plan B is fully rehearsed (the proof run was exactly that). Plan A adds one
-untested step: a non-owner's Claude session writing to the store. If Dom's
-session says it cannot write, fall back to Plan B for filing only — he can
-still click Approve on the board.
+Rehearsed on issue #2 (the "menu to the bottom" visual change, which also
+trips the gate and is approved with `/approve` on the issue).
 
 ## Antonio — setup (before the call, ~10 min)
 
@@ -51,24 +52,27 @@ still click Approve on the board.
 6. Screen-share the **board tab**. Cards moving is the demo; sessions are
    backstage.
 
-## Dom and the other dev — setup (5 min, own machine) — Plan A only
+## Dom and the other dev — setup (3 min, own machine)
 
-1. Open the board link Antonio shared, signed in to the claude.ai account he
-   shared it with.
-2. Install the skill so *your* Claude becomes a factory agent:
+They never open the board (it only works on Antonio's account). They use
+GitHub.
+
+1. `gh auth status` must be green on their machine (any GitHub account).
+2. Optional but nicer — install the skill so their Claude knows the factory's
+   format and dedups:
    ```bash
    git clone https://github.com/AntonioVentilii/open-cloud-factory-demo.git ~/open-cloud-factory-demo
    ```
    ```bash
    ln -s ~/open-cloud-factory-demo/.factory/skill/open-cloud-factory ~/.claude/skills/open-cloud-factory
    ```
-3. Claude Code session titled `Open Cloud — <name>`:
+   Without the skill, "open an issue on AntonioVentilii/open-cloud-factory-demo
+   titled …" works just as well.
+3. Claude Code session titled `Open Cloud — <name>`. To file:
    ```
-   /open-cloud-factory what's in the factory?
+   /open-cloud-factory create a TODO for open-cloud: <what should have happened>
    ```
-   If it lists the board's tasks, you are connected. If it says it cannot
-   reach the store → Plan B for filing.
-4. No `gh` login needed.
+   They get the issue URL back. They follow and approve **on the issue**.
 
 ## The script (~15 min)
 
