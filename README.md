@@ -5,6 +5,6 @@ specs become PRs, PRs are reviewed, gated and merged by agents — humans approv
 at the gates.
 
 - `npm test` — unit tests (node:test)
-- `npm start` — gateway on :8080 (`GET /status`, `GET /engines` with `x-api-key`)
+- `npm start` — gateway on :8080 (`GET /status`, `GET /version`, `GET /engines` with `x-api-key`)
 
 `src/auth.js` is deliberately a gated path: any change there requires a human.
