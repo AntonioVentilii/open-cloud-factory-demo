@@ -9,13 +9,13 @@ Do:
    or clone read-only into `$TMPDIR/factory-spec-<id>`) so the spec points at
    real files and conventions, not guesses.
 2. Write the spec in this shape (markdown, ≤ 60 lines):
-   - **Goal** — one sentence, imperative, what will have happened.
-   - **Why** — one or two sentences.
-   - **Change** — exact files/paths, the shape of the change, interfaces.
-   - **Out of scope** — the tempting edges.
-   - **Verify** — the commands/tests/checks that prove it; what a reviewer
+   - **Goal**: one sentence, imperative, what will have happened.
+   - **Why**: one or two sentences.
+   - **Change**: exact files/paths, the shape of the change, interfaces.
+   - **Out of scope**: the tempting edges.
+   - **Verify**: the commands/tests/checks that prove it; what a reviewer
      should look at.
-   - **Risk** — one of: `low | migration | auth | public-api | visual |
+   - **Risk**: one of: `low | migration | auth | public-api | visual |
      deprecation | infra` (the gate agent reads this).
 3. If a real decision is missing (which of two designs, a product choice), do
    NOT invent it: return `blocked` with the single sharpest question.

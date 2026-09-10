@@ -9,7 +9,7 @@ set -u
 REPO="AntonioVentilii/open-cloud-factory-demo"
 say() { printf '\033[1m%s\033[0m\n' "$*"; }
 
-# 1. The skill (the agent door) — installed by symlink on Dom's machines,
+# 1. The skill (the agent door), installed by symlink on Dom's machines,
 #    as a real directory on Antonio's.
 say "skill"
 if [ -L ~/.claude/skills/open-cloud-factory ]; then
@@ -40,10 +40,10 @@ fi
 say "temp clones"
 rm -rf "${TMPDIR:-/tmp}"/factory-spec-* 2>/dev/null && echo "  cleared ${TMPDIR:-/tmp}/factory-spec-*"
 
-# 5. Claude Code sessions are not files: close the "Open Cloud — …" sessions
+# 5. Claude Code sessions are not files: close the "Open Cloud, …" sessions
 #    in the app (Orchestrator, Antonio, Inbox, Dom, …) and stop any /loop.
 say "sessions"
-echo "  close the 'Open Cloud — *' sessions in Claude Code by hand"
+echo "  close the 'Open Cloud, *' sessions in Claude Code by hand"
 
 # 6. The board artifact and its store live on claude.ai: delete it from
 #    https://claude.ai/code/artifacts (owner only). Deleting the artifact

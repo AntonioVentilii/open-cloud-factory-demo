@@ -3,7 +3,7 @@ name: open-cloud-factory
 description: Connect this Claude session to the Open Cloud software factory - a shared task store behind a live kanban board. Use when asked to "create a TODO in the factory", "put X in the factory", "what's in the factory", "show me my inbox", or to act as the factory ORCHESTRATOR (run the agent stages), a WORKER, or the RETRO agent. Any Claude session that loads this skill is a factory agent; the board is only the human window.
 ---
 
-# Open Cloud Factory — the agent door
+# Open Cloud Factory, the agent door
 
 The factory is a **shared document store** attached to a published board. Humans
 look at the board; agents talk to the store. There is no message bus and no
@@ -58,7 +58,7 @@ clears it.
 2. **Self-contained tasks.** A spec must let a session with no memory of the
    conversation that produced it do the work. If it can't, it isn't specced yet.
 3. **Claim before you work.** For an agent stage, first `update` `agent: "<your
-   name>"` + `updated_at`. Re-read; if `agent` is not you, someone else won —
+   name>"` + `updated_at`. Re-read; if `agent` is not you, someone else won -
    skip it. One orchestrator is the design; this is the belt.
 4. **Blocked beats guessing.** Anything you'd have to invent (a credential, a
    product decision, an ambiguous requirement) → set `blocked` to the question,
@@ -72,23 +72,23 @@ clears it.
 
 ## Verbs (what "create · claim · advance · ask-human · learn" mean)
 
-- **create** — `write_db set tasks/<id>` with the task document above, `stage:
+- **create**: `write_db set tasks/<id>` with the task document above, `stage:
   "inbox"`, `created_by` = your session name, one log entry. Before creating,
   `read_db query tasks` where `repo == <repo>` and check titles for an
   existing TODO that already covers it; if one does, tell the user and don't
   duplicate.
-- **claim** — law 3.
-- **advance** — `update` `{stage: <next>, agent: null, updated_at, log: [...]}`
+- **claim**: law 3.
+- **advance**: `update` `{stage: <next>, agent: null, updated_at, log: [...]}`
   plus the stage's output field (`spec`, `plan`, `pr`, `review`, `gate`).
-- **ask-human** — law 4 (`blocked`), or `gate.verdict != "none"` → `stage:
+- **ask-human**: law 4 (`blocked`), or `gate.verdict != "none"` → `stage:
   "human_verify"`.
-- **learn** — `write_db set learnings/<id>` `{t, source_task, text,
+- **learn**: `write_db set learnings/<id>` `{t, source_task, text,
   proposed_change, status: "proposed"}`. Proposals only; a human applies them
   to the agent prompts in `~/.claude/skills/open-cloud-factory/agents/`.
 
 ## Role: entry (any session, e.g. "create a TODO in the factory")
 
-Two doors. Use the **GitHub door by default** — it works from any account on
+Two doors. Use the **GitHub door by default**: it works from any account on
 any machine with `gh` logged in, and needs no access to the board's store.
 
 **GitHub door (default).** The repo for `open-cloud` is
@@ -105,7 +105,7 @@ any machine with `gh` logged in, and needs no access to the board's store.
 **Store door** (only when the session can write to the board's store):
 **create** as described in Verbs, with `created_by` = your session name, and
 reply with the id and the board link. Ask nothing you can infer; a one-line
-title and a short body are enough — the spec agent does the rest.
+title and a short body are enough, the spec agent does the rest.
 
 ## GitHub mirror (orchestrator only)
 
@@ -119,7 +119,7 @@ copy; the issue thread is the public trail and the human channel.
   then `gh issue comment <n> --repo <github> -b "Factory: picked up as
   <task id>. Speccing now; I will comment at every stage."`
 - **Mirror out** (every stage change you write): `gh issue comment <n> -b
-  "Factory · <stage>: <one line — what happened, PR link if any>"`. Keep it
+  "Factory · <stage>: <one line, what happened, PR link if any>"`. Keep it
   one comment per transition, no attribution lines.
 - **Human stages via the issue**: when a task enters `spec_approval`, comment
   the full spec and the line "Reply `/approve` to build it, or `/changes
@@ -131,7 +131,7 @@ copy; the issue thread is the public trail and the human channel.
   board button would (`spec_approval` → `planning`, `human_verify` →
   `merging`); `/changes <note>` sends it back (`speccing` / `building`) with
   the note in `human_note`; for a `blocked` task, the first new comment from
-  a human is the answer — write it to `human_note`, clear `blocked`. Log who
+  a human is the answer, write it to `human_note`, clear `blocked`. Log who
   answered (`github:<login>`). Board buttons keep working; whichever comes
   first wins.
 - **Link the PR**: the build agent's PR body ends with `Closes #<n>`, so the
@@ -143,7 +143,7 @@ copy; the issue thread is the public trail and the human channel.
 ## Role: orchestrator (`/open-cloud-factory orchestrate`)
 
 One session, kept running. Name yourself `orchestrator`. Loop (use `/loop`
-self-paced, ~60–120 s between idle cycles):
+self-paced, ~60-120 s between idle cycles):
 
 0. **GitHub mirror** (section below): mirror in new issues; apply
    `/approve`, `/changes`, and answers from issue comments.
@@ -154,7 +154,7 @@ self-paced, ~60–120 s between idle cycles):
    prompt is: the file `~/.claude/skills/open-cloud-factory/agents/<stage>.md`
    (read it, paste it) + the full task JSON + `config.repo_map[task.repo]`.
    The subagent returns a JSON result; you apply it with **advance**,
-   **ask-human**, or `blocked`. Subagents never write to the store — you do.
+   **ask-human**, or `blocked`. Subagents never write to the store, you do.
    Fresh context per stage is the point: the judge never remembers what the
    builder was thinking.
 3. Tasks in `done` without a `retro_done: true` → spawn `agents/retro.md`,
@@ -168,5 +168,5 @@ Inbox tasks move to `speccing` immediately (log: "picked up by orchestrator").
 `read_db query tasks` where `stage in [spec_approval, human_verify]` plus any
 with `blocked != null`. Present a numbered digest: what it is, the exact
 question or decision, what it unblocks. Answers go to the board buttons (or, if
-the human prefers chat, write `human_note` + clear `blocked` yourself — but
+the human prefers chat, write `human_note` + clear `blocked` yourself, but
 never move a human stage; that stays a click).

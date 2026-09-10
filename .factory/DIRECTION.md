@@ -1,4 +1,4 @@
-# Two factories, one shape — proposal for the 14:15 demo
+# Two factories, one shape, proposal for the 10 September demo
 
 Two things were built this morning. They are not competing; they are two
 layers of the same machine.
@@ -24,14 +24,14 @@ any Claude session ─"create a TODO"─► GitHub issue
 - Every 🤖 stage is a fresh-context subagent: the reviewer never remembers
   what the builder was thinking; the gate never sees either. Same idea as
   Dom's "judge from disk, never from memory", applied to every judgement.
-- 👤 stages move only on a human's word — a click on the board or a
+- 👤 stages move only on a human's word, a click on the board or a
   `/approve` / `/changes <note>` comment on the issue. Approval on GitHub
   needs no permissions, no shared machine, no Claude org.
 - The gate is rule-based first (touches `auth/`, migrations, deploy, CI,
   deleted public API, dependency bumps, visible UI → a human looks) and
   defaults to gating when unsure.
-- The retro agent reads the whole trail — review rounds, CI reds, human
-  send-backs, gate overrides — and files proposals against `agents/*.md`.
+- The retro agent reads the whole trail, review rounds, CI reds, human
+  send-backs, gate overrides, and files proposals against `agents/*.md`.
   First task already produced three; two were real (a `gh` self-approval
   quirk, a denied `rm -rf`) and are fixed.
 
@@ -49,8 +49,8 @@ protection plug into it for free.
 
 The **build stage** of this pipeline is where an execution engine plugs in.
 Today it is one subagent in a worktree; for Cloud Engines it should be a
-seat from `opencloud-factory` — worktree plus the 4-replica + fake-NNS local
-network — claimed through Dom's `factory.sh`. Everything before it (entry,
+seat from `opencloud-factory`, worktree plus the 4-replica + fake-NNS local
+network, claimed through Dom's `factory.sh`. Everything before it (entry,
 spec, approval, plan) and after it (review, gate, verify, merge, retro) stays
 as it is here.
 
@@ -68,9 +68,9 @@ GitHub issue ─► spec/approve/plan ─► [ opencloud-factory seat builds it 
 
 ## Proposal
 
-Show both at 14:15: Pietro's engine running a task on a seat; this pipeline
+Show both at the 10 September demo: Pietro's engine running a task on a seat; this pipeline
 taking Dom's TODO from his own laptop through spec, gates and merge. Then
-decide the shape together — the obvious one is the diagram above.
+decide the shape together, the obvious one is the diagram above.
 
 Agent door for this repo: `.factory/skill/open-cloud-factory/` (install with
 one symlink, then `/open-cloud-factory` in any Claude Code session).

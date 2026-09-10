@@ -2,7 +2,7 @@
 
 The factory's agent door, versioned with the code.
 
-- `skill/open-cloud-factory/` — the Claude Code skill every factory agent loads
+- `skill/open-cloud-factory/`, the Claude Code skill every factory agent loads
   (`SKILL.md` = protocol; `agents/*.md` = one prompt per stage). Install:
 
       ln -s "$PWD/.factory/skill/open-cloud-factory" ~/.claude/skills/open-cloud-factory

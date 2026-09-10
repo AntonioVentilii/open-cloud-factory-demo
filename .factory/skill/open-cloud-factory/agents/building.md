@@ -17,7 +17,7 @@ cd "$W" && git fetch origin && git checkout -B factory/<task id> origin/<default
 Then:
 1. Implement exactly the plan's steps. Match the repo's existing style.
 2. Run the spec's **Verify** commands. If they fail and you cannot fix it
-   within the spec, return `failed` with the output — never a green-washed PR.
+   within the spec, return `failed` with the output, never a green-washed PR.
 3. Commit with a clear message (no AI attribution lines), push the branch,
    and open the PR: `gh pr create --base <default_branch> --title "<task
    title>" --body "<Goal, what changed, how verified, task id>"`. If the task
