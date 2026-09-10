@@ -4,15 +4,16 @@
   --muted: #6b7380;
   --line: #dde1e7;
   --accent: #2f6fed;
+  --menu-w: 220px;
 }
 * { box-sizing: border-box; }
-body { margin: 0; font: 15px/1.5 system-ui, sans-serif; color: var(--ink); background: var(--bg); display: flex; flex-direction: column; min-height: 100vh; }
+body { margin: 0; font: 15px/1.5 system-ui, sans-serif; color: var(--ink); background: var(--bg); display: flex; min-height: 100vh; }
 
-/* Bottom bar. */
-.menu { width: 100%; background: #fff; border-top: 1px solid var(--line); border-right: 0; padding: 10px 24px; display: flex; flex-direction: row; align-items: center; gap: 32px; position: sticky; bottom: 0; }
+/* Side menu (left). */
+.menu { width: var(--menu-w); background: #fff; border-right: 1px solid var(--line); padding: 20px 16px; display: flex; flex-direction: column; gap: 24px; }
 .logo { display: flex; align-items: center; gap: 10px; color: var(--accent); text-decoration: none; font-weight: 600; font-size: 18px; }
 .logo-mark { width: 28px; height: 28px; }
-nav { display: flex; flex-direction: row; gap: 4px; }
+nav { display: flex; flex-direction: column; gap: 4px; }
 nav a { padding: 8px 10px; border-radius: 6px; color: var(--ink); text-decoration: none; }
 nav a:hover { background: var(--bg); }
 nav a.active { background: var(--accent); color: #fff; }

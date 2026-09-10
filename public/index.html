@@ -7,17 +7,6 @@
 <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <main>
-    <header class="page-head">
-      <h1>Engines</h1>
-      <p class="muted">Gateway <code id="version">…</code></p>
-    </header>
-    <section class="cards" id="engines">
-      <article class="card"><h2>eu-central-1</h2><p>4 replicas · healthy</p></article>
-      <article class="card"><h2>us-east-2</h2><p>4 replicas · healthy</p></article>
-      <article class="card"><h2>ap-south-1</h2><p>provisioning</p></article>
-    </section>
-  </main>
   <aside class="menu" aria-label="Main menu">
     <a class="logo" href="/">
       <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true">
@@ -33,6 +22,17 @@
       <a href="#settings">Settings</a>
     </nav>
   </aside>
+  <main>
+    <header class="page-head">
+      <h1>Engines</h1>
+      <p class="muted">Gateway <code id="version">…</code></p>
+    </header>
+    <section class="cards" id="engines">
+      <article class="card"><h2>eu-central-1</h2><p>4 replicas · healthy</p></article>
+      <article class="card"><h2>us-east-2</h2><p>4 replicas · healthy</p></article>
+      <article class="card"><h2>ap-south-1</h2><p>provisioning</p></article>
+    </section>
+  </main>
   <script>
     fetch('/version').then(r => r.json()).then(v => { document.getElementById('version').textContent = 'v' + v.version; }).catch(() => {});
   </script>
