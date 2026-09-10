@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open Cloud Console</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <aside class="menu" aria-label="Main menu">
+    <a class="logo" href="/">
+      <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="16" cy="16" r="5" fill="currentColor"/>
+      </svg>
+      <span class="logo-text">Open Cloud</span>
+    </a>
+    <nav>
+      <a href="#engines" class="active">Engines</a>
+      <a href="#subnets">Subnets</a>
+      <a href="#billing">Billing</a>
+      <a href="#settings">Settings</a>
+    </nav>
+  </aside>
+  <main>
+    <header class="page-head">
+      <h1>Engines</h1>
+      <p class="muted">Gateway <code id="version">…</code></p>
+    </header>
+    <section class="cards" id="engines">
+      <article class="card"><h2>eu-central-1</h2><p>4 replicas · healthy</p></article>
+      <article class="card"><h2>us-east-2</h2><p>4 replicas · healthy</p></article>
+      <article class="card"><h2>ap-south-1</h2><p>provisioning</p></article>
+    </section>
+  </main>
+  <script>
+    fetch('/version').then(r => r.json()).then(v => { document.getElementById('version').textContent = 'v' + v.version; }).catch(() => {});
+  </script>
+</body>
+</html>
