@@ -121,6 +121,29 @@ loop, and it already caught two things on the very first task."
 - Reviewer posts a comment instead of an approval: expected (same GitHub
   account can't self-approve). Fixed by a factory GitHub App later.
 
+## After the demo — cleanup
+
+Everything the demo put on a machine comes off with one script (in the repo
+at `.factory/cleanup.sh`; safe to re-run):
+
+```bash
+bash ~/open-cloud-factory-demo/.factory/cleanup.sh
+```
+Removes: the skill (`~/.claude/skills/open-cloud-factory`), worker checkouts
+(`~/.factory`), the local clone (`~/open-cloud-factory-demo`), temp spec
+clones. Then close the `Open Cloud — *` sessions in Claude Code by hand.
+
+Antonio only, on top of the above:
+```bash
+bash .factory/cleanup.sh --remote
+```
+closes the demo issues and PRs and deletes `factory/*` branches;
+`--all` also deletes the repo (asks for the name first). Delete the board
+from https://claude.ai/code/artifacts — that erases its store too.
+
+`gh repo delete` needs the `delete_repo` scope: `gh auth refresh -s delete_repo`
+once, if it complains.
+
 ## What is real vs. thin (say it if asked)
 
 Real: shared store, live board, skill-based agent connection, fresh-context
