@@ -134,6 +134,15 @@ copy; the issue thread is the public trail and the human channel.
   a human is the answer, write it to `human_note`, clear `blocked`. Log who
   answered (`github:<login>`). Board buttons keep working; whichever comes
   first wins.
+  A chat message to the orchestrator is NOT an approval. If a human approves
+  in chat, reply with the issue link and ask them to comment `/approve` there
+  (or click the board); never write `human_verify` -> `merging` or
+  `spec_approval` -> `planning` on a chat instruction (law 5). The issue
+  thread must show who approved and where. (Learned on oc-mfe1c0a0.)
+  `updated_at` and every log `t` must be real clock reads (`date -u
+  +%FT%TZ`), never typed from memory: the comment filter compares GitHub
+  `createdAt` against `updated_at`, and an invented timestamp ahead of real
+  time hides every `/approve`. (Learned on oc-mfe1c0a0.)
 - **Link the PR**: the build agent's PR body ends with `Closes #<n>`, so the
   issue closes itself on merge. On `done`, comment "Factory · done: merged
   <sha>." and let GitHub close it.
