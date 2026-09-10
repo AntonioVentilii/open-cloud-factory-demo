@@ -20,7 +20,9 @@ Then:
    within the spec, return `failed` with the output — never a green-washed PR.
 3. Commit with a clear message (no AI attribution lines), push the branch,
    and open the PR: `gh pr create --base <default_branch> --title "<task
-   title>" --body "<Goal, what changed, how verified, task id>"`.
+   title>" --body "<Goal, what changed, how verified, task id>"`. If the task
+   carries `issue.number`, end the body with a line `Closes #<number>` so the
+   issue closes on merge.
    Fix round: push only, then `gh pr view --json url,number`.
 4. Never merge. Never touch `<default_branch>` directly.
 

@@ -88,15 +88,65 @@ clears it.
 
 ## Role: entry (any session, e.g. "create a TODO in the factory")
 
-Ask nothing you can infer; a one-line title and a short body are enough — the
-spec agent interviews for the rest, on the board. Then **create** and reply
-with the id and the board link.
+Two doors. Use the **GitHub door by default** — it works from any account on
+any machine with `gh` logged in, and needs no access to the board's store.
+
+**GitHub door (default).** The repo for `open-cloud` is
+`AntonioVentilii/open-cloud-factory-demo` (public: anyone can open an issue).
+1. Dedup: `gh issue list --repo <github> --state open --json number,title`
+   and `gh pr list --repo <github> --json number,title`; if an open issue
+   already covers the request, tell the user and link it instead of filing.
+2. `gh issue create --repo <github> --title "<imperative title>" --body
+   "<context>\n\n---\nfiled via /open-cloud-factory by <session name>"`.
+3. Reply with the issue URL: "the orchestrator will pick it up within a
+   minute and comment on the issue at every stage; reply `/approve` or
+   `/changes <note>` on the issue when it asks."
+
+**Store door** (only when the session can write to the board's store):
+**create** as described in Verbs, with `created_by` = your session name, and
+reply with the id and the board link. Ask nothing you can infer; a one-line
+title and a short body are enough — the spec agent does the rest.
+
+## GitHub mirror (orchestrator only)
+
+Every GitHub issue on a factory repo is a TODO; the store is the working
+copy; the issue thread is the public trail and the human channel.
+
+- **Mirror in** (each cycle): `gh issue list --repo <github> --state open
+  --json number,title,body,author,createdAt,url`. For each issue with no task
+  whose `issue.number` matches: **create** the task with `issue: {number,
+  url, author}`, `created_by: "github:<author login>"`, body = issue body,
+  then `gh issue comment <n> --repo <github> -b "Factory: picked up as
+  <task id>. Speccing now; I will comment at every stage."`
+- **Mirror out** (every stage change you write): `gh issue comment <n> -b
+  "Factory · <stage>: <one line — what happened, PR link if any>"`. Keep it
+  one comment per transition, no attribution lines.
+- **Human stages via the issue**: when a task enters `spec_approval`, comment
+  the full spec and the line "Reply `/approve` to build it, or `/changes
+  <what to change>`." When it enters `human_verify`, comment the gate reason,
+  the PR link, and the same two commands. Each cycle, for tasks in a human
+  stage or `blocked`, read `gh issue view <n> --repo <github> --json comments
+  --jq '.comments[] | select(.createdAt > "<updated_at>") | {author: .author
+  .login, body}'`: a comment starting with `/approve` moves it exactly as the
+  board button would (`spec_approval` → `planning`, `human_verify` →
+  `merging`); `/changes <note>` sends it back (`speccing` / `building`) with
+  the note in `human_note`; for a `blocked` task, the first new comment from
+  a human is the answer — write it to `human_note`, clear `blocked`. Log who
+  answered (`github:<login>`). Board buttons keep working; whichever comes
+  first wins.
+- **Link the PR**: the build agent's PR body ends with `Closes #<n>`, so the
+  issue closes itself on merge. On `done`, comment "Factory · done: merged
+  <sha>." and let GitHub close it.
+- One orchestrator per repo. If two run, they race on mirror-in; the store
+  claim (law 3) resolves it, the loser deletes its duplicate task.
 
 ## Role: orchestrator (`/open-cloud-factory orchestrate`)
 
 One session, kept running. Name yourself `orchestrator`. Loop (use `/loop`
 self-paced, ~60–120 s between idle cycles):
 
+0. **GitHub mirror** (section below): mirror in new issues; apply
+   `/approve`, `/changes`, and answers from issue comments.
 1. `read_db list tasks`. Collect tasks whose `stage` is in
    `config.agent_stages`, `blocked` is null, and `agent` is null.
 2. For each (oldest `updated_at` first), **claim**, then spawn ONE fresh
