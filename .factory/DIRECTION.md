@@ -1,5 +1,29 @@
 # Two factories, one shape, proposal for the 10 September demo
 
+## TL;DR
+
+Same goal in both: automate request, spec, implementation, test, PR. The
+difference is not the stages, it is three things around them:
+
+1. **Where the humans are.** Here a spec must be approved before anything is
+   built, and an independent gate decides whether a human must look before
+   merge (auth, migrations, CI, visible UI). In the ported factory, consumer
+   seats merge on their own; the operator lane is for blocked work, not a
+   gate.
+2. **Who can put work in, from where.** Here anyone, from their own laptop
+   and account: "create a TODO" becomes a GitHub issue, and they follow and
+   approve on that issue. The ported factory is sessions on one machine
+   sharing one queue directory.
+3. **How it learns.** Here a retro agent reads each finished task and files
+   prompt-change proposals with evidence; humans merge them. The ported
+   factory learns when someone hand-edits SKILL.md after an incident.
+
+The build step is the same in both, which is why they plug together: the
+seats become the build stage of this pipeline. Proven today: two tickets
+inbox to merged, one gated for a human, filed and approved from GitHub.
+
+## The long version
+
 Two things were built this morning. They are not competing; they are two
 layers of the same machine.
 
