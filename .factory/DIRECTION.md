@@ -1,100 +1,58 @@
-# Two factories, one shape, proposal for the 10 September demo
+# Two factories, one shape
+
+Written 10 September 2026 before the demo, corrected 11 September after
+reading `dfinity/opencloud-factory` properly. The concrete proposal that came
+out of it is [opencloud-factory#17](https://github.com/dfinity/opencloud-factory/issues/17).
 
 ## TL;DR
 
-Same goal in both: automate request, spec, implementation, test, PR. The
-difference is not the stages, it is three things around them:
+Same goal in both: automate request, plan, implementation, review, PR, merge.
+`opencloud-factory` (Pietro, Yusef) is the stronger machine: code-enforced
+exit gates, a plan stage, design as a human pick, two reviewers, human merge,
+a lessons file every agent reads first, a board. It is the base.
 
-1. **Where the humans are.** Here a spec must be approved before anything is
-   built, and an independent gate decides whether a human must look before
-   merge (auth, migrations, CI, visible UI). In the ported factory, consumer
-   seats merge on their own; the operator lane is for blocked work, not a
-   gate.
-2. **Who can put work in, from where.** Here anyone, from their own laptop
-   and account: "create a TODO" becomes a GitHub issue, and they follow and
-   approve on that issue. The ported factory is sessions on one machine
-   sharing one queue directory.
-3. **How it learns.** Here a retro agent reads each finished task and files
-   prompt-change proposals with evidence; humans merge them. The ported
-   factory learns when someone hand-edits SKILL.md after an incident.
+What this prototype has that it does not, and what a person filing a ticket
+would notice:
 
-The build step is the same in both, which is why they plug together: the
-seats become the build stage of this pipeline. Proven today: two tickets
-inbox to merged, one gated for a human, filed and approved from GitHub.
+1. **Entry from anywhere.** Here anyone, from their own laptop and account:
+   "create a TODO" becomes a GitHub issue, and they follow and decide on that
+   issue. `opencloud-factory` enters work through `factory add` or a console
+   session on the machine that runs it, and is set up per engineer, per
+   checkout.
+2. **A human checkpoint before the expensive stages.** Here the plan is
+   approved before anything is built. In `opencloud-factory` the first human
+   checkpoint is the merge, after `build` and `review` have run at opus
+   xhigh. (Its `manual` gate type exists for exactly this and is unused.)
+3. **Learning from the whole trail.** Here a retro agent reads each finished
+   item end to end and proposes prompt changes with evidence; humans merge
+   them. `opencloud-factory` has `factory lessons`: one-liners agents choose
+   to write, which is the input, not the loop.
 
-## The long version
+Plus one thing neither had until three people wanted one factory: an owner on
+every item, so `factory mine` is per person.
 
-Two things were built this morning. They are not competing; they are two
-layers of the same machine.
+Everything else in this prototype (spec agent, reviewer, gate rules, board)
+exists in `opencloud-factory` in a better form and is not proposed.
 
-| | `dfinity/opencloud-factory` (Pietro, Yusef) | this repo (Antonio) |
-|---|---|---|
-| What it is | Dom's Open SaaS factory ported to opencloud: seats (worktree + local network), file queue, atomic claims, prioritizer, kanban dashboard | The layer *around* an execution engine: how work gets in, where humans must decide, how the agents get better |
-| Runs where | one machine, one queue directory, CLI seats | a shared store + GitHub; agents are any Claude session that loads one skill |
-| Entry | operator/producer sessions on that machine | anyone, any laptop, any account: "create a TODO in the factory" → a GitHub issue |
-| Human touch | operator lane, inbox console | two explicit gates: spec approval before build; an independent gate agent decides if a human must look before merge |
-| Learning | hand-written into SKILL.md after incidents | a retro agent proposes prompt changes with evidence after every task; humans merge |
-| Proven today | task e2e in progress | two tasks inbox → merged ([#1](../../pull/1) no human needed, [#2](../../issues/2) gated as a visual change and approved with `/approve` on the issue) |
+## What the prototype proved on 10 September
 
-## The pipeline (what the second layer adds)
+Two tickets, inbox to merged, in `AntonioVentilii/open-cloud-factory-demo`:
 
-```
-any Claude session ─"create a TODO"─► GitHub issue
-                                          │ orchestrator mirrors it in, comments at every stage
-   inbox ─► spec 🤖 ─► spec approval 👤 ─► plan 🤖 ─► build 🤖 ─► review 🤖 ─► gate 🤖 ─► human verify 👤 ─► merge 🤖 ─► done ─► retro 🤖
-                        /approve on the issue                                   independent judge      /approve on the issue         proposals, humans merge
-```
+- [#1](../../pull/1): `GET /version`. Filed from a session, spec approved,
+  PR, review, gate `none`, merged. No human needed after the spec. 16 min.
+- [#2](../../issues/2) / [#3](../../pull/3): move the console menu to the
+  bottom. Filed as a GitHub issue, `/approve` on the issue, PR, review, gate
+  `review` (visible UI change), human verify, merged. The retro agent then
+  flagged that the orchestrator had merged on a chat message with no
+  on-record approval, and proposed the rule "a chat message is not an
+  approval". Applied.
 
-- Every 🤖 stage is a fresh-context subagent: the reviewer never remembers
-  what the builder was thinking; the gate never sees either. Same idea as
-  Dom's "judge from disk, never from memory", applied to every judgement.
-- 👤 stages move only on a human's word, a click on the board or a
-  `/approve` / `/changes <note>` comment on the issue. Approval on GitHub
-  needs no permissions, no shared machine, no Claude org.
-- The gate is rule-based first (touches `auth/`, migrations, deploy, CI,
-  deleted public API, dependency bumps, visible UI → a human looks) and
-  defaults to gating when unsure.
-- The retro agent reads the whole trail, review rounds, CI reds, human
-  send-backs, gate overrides, and files proposals against `agents/*.md`.
-  First task already produced three; two were real (a `gh` self-approval
-  quirk, a denied `rm -rf`) and are fixed.
-
-## Why GitHub as the shared state, not a queue directory
-
-Dom's factory coordinates through atomic renames on one filesystem. That is
-exactly right for seats on one machine and exactly wrong for a team: three
-people on three laptops with three different accounts cannot share a
-directory, and a laptop that sleeps takes the factory down with it (Dom's
-2026-08-20 incident). Issues, PRs, labels and comments already are a shared,
-durable, audited store everyone can reach, and Copilot review and branch
-protection plug into it for free.
-
-## How the two fit together
-
-The **build stage** of this pipeline is where an execution engine plugs in.
-Today it is one subagent in a worktree; for Cloud Engines it should be a
-seat from `opencloud-factory`, worktree plus the 4-replica + fake-NNS local
-network, claimed through Dom's `factory.sh`. Everything before it (entry,
-spec, approval, plan) and after it (review, gate, verify, merge, retro) stays
-as it is here.
+## How the two fit
 
 ```
-GitHub issue ─► spec/approve/plan ─► [ opencloud-factory seat builds it ] ─► review/gate/verify/merge ─► retro
+GitHub issue (anyone) -> inbox -> plan -> [owner approves the plan] -> design -> ready -> build -> review -> pr -> green -> approve (human merge) -> dev -> live -> retro
+                                  opencloud-factory as it is, on the shared devenv
 ```
 
-## What is thin, honestly
-
-- The orchestrator is a Claude Code session on one laptop today. Production:
-  a small service on a VM with a factory GitHub App identity and an API key.
-- Stage prompts are first drafts; the retro loop exists precisely so they stop
-  being drafts.
-- The live board is a window, not the store; it lives on one account. Fine.
-
-## Proposal
-
-Show both at the 10 September demo: Pietro's engine running a task on a seat; this pipeline
-taking Dom's TODO from his own laptop through spec, gates and merge. Then
-decide the shape together, the obvious one is the diagram above.
-
-Agent door for this repo: `.factory/skill/open-cloud-factory/` (install with
-one symlink, then `/open-cloud-factory` in any Claude Code session).
+The four additions are one PR each, on files that already exist there.
+Details, effort and order: [opencloud-factory#17](https://github.com/dfinity/opencloud-factory/issues/17).
